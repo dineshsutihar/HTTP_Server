@@ -1,10 +1,13 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
 const port = 3000;
 
-const USERS =[];
+app.use(bodyParser.json()); // Parse JSON requests
+
+const USERS =[];// This array will store user information
 
 const QUESTIONS =[
     {
@@ -30,18 +33,34 @@ const SUBMISSION =[
     },
 ]
 
-app.post('/signup', (req, res) => {
-    //Add logic to decode body
-    // body should have email and password
+app.route('/signup')
+  .get((req, res) => {
+    // Handle GET request for signup (if needed)
+    res.send('Signup page');
+  })
+  .post((req, res) => {
+    // Add logic to decode body
+    // Body should have email and password
+    const { email, password } = req.body;
 
+    // Check if email and password are provided
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password are required.' });
+    }
 
+    // Check if the user with the given email already exists
+    const existingUser = USERS.find(user => user.email === email);
+    if (existingUser) {
+        return res.status(400).json({ error: 'User with this email already exists.' });
+    }
 
-    // store email and password (as is for now) in the Users array above (only if the user with the given email doesnot exit ) 
+    // Store email and password in the USERS array
+    USERS.push({ email, password });
 
+    // Return 200 status code to the client
+    res.status(200).send('Signup successful');
+  });
 
-    //return back 200 status code to the client
-    res.send("signup")
-});
 
 app.post('/login', (req, res) => {
     // Add logic to decode body 
