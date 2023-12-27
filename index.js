@@ -62,23 +62,24 @@ app.route('/signup')
   });
 
 
-app.post('/login', (req, res) => {
-    // Add logic to decode body 
-    //  body should have email and password
-
-
-    // Check if the user with the given email exits in the USER array
-    // Also ensure that the passwrod is the same
-
-
-    // If the password is the same, return back 200 status code to the client
-    // Also send back a token (any random string will do for now)
-    // If the passwrod is not the same, return back 401 status code to the client 
-
-
-
-    res.send('login');
-});
+  app.post('/login', (req, res) => {
+    // Add logic to decode body (assuming JSON body)
+    const { email, password } = req.body;
+  
+    // Check if the user with the given email exists in the USER array
+    const user = USERS.find((user) => user.email === email);
+  
+    // Also ensure that the password is the same
+    if (user && user.password === password) {
+      // If the password is the same, return back 200 status code to the client
+      // Also send back a token (any random string will do for now)
+      const token = 'random-token'; // Placeholder for the token
+      res.status(200).json({ message: 'Login successful', token });
+    } else {
+      // If the password is not the same, return back 401 status code to the client
+      res.status(401).json({ error: 'Invalid credentials' });
+    }
+  });
 
 app.get('/questions', (req, res) => {
     // return the user all the question sin the Qureions array
